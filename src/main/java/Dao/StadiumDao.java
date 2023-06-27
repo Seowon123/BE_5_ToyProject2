@@ -2,10 +2,7 @@ package Dao;
 
 import model.Stadium;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +19,7 @@ public class StadiumDao {
 
         String query = "insert into stadium_tb (name) values (?)";
 
-        try {
-            PreparedStatement statement = connection.prepareStatement(query);
+        try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, name);
 
             int result = statement.executeUpdate();

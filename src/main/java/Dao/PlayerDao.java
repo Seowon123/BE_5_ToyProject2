@@ -16,10 +16,10 @@ public class PlayerDao {
 
     //선수 등록
 
-    public int createPlayer(int teamId, String name, Position position) {
-        String sql = "insert into player(team_id, name, position) values (?, ?, ?)";
+    public int registerPlayer(int teamId, String name, Position position) {
+        String query = "insert into player(team_id, name, position) values (?, ?, ?)";
 
-        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             statement.setInt(1, teamId);
             statement.setString(2, name);
             statement.setString(3, position.getName());
