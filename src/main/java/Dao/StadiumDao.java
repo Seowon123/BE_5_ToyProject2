@@ -18,7 +18,21 @@ public class StadiumDao {
     }
 
     // 야구장 등록
+    public void registerStadium(String name) {
 
+        String query = "insert into stadium_tb (name) values (?)";
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, name);
+
+            int result = statement.executeUpdate();
+            System.out.println("registerStadium res : " + result);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     // 전체 야구장 목록 보기
 

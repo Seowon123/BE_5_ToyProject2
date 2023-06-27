@@ -1,11 +1,9 @@
 package Dao;
 
+import constant.Position;
 import model.Player;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +15,23 @@ public class PlayerDao {
     }
 
     //선수 등록
+
+    public int createPlayer(int teamId, String name, Position position) {
+        String sql = "insert into player(team_id, name, position) values (?, ?, ?)";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setInt(1, teamId);
+            statement.setString(2, name);
+            statement.setString(3, position.getName());
+
+            int rowCount = statement.executeUpdate();
+
+            return rowCount;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     // 팀별 선수 목록
     public List<Player> getPlayers(int teamId) {
