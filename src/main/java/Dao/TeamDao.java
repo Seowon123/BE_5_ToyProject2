@@ -15,7 +15,7 @@ public class TeamDao {
         this.connection = connection;
     }
     public void registerTeam(String name) {
-        String query = "insert into team_tb (stadium_id, name, created_at) values (?, ?,now())";
+        String query = "insert into team (stadium_id, team_name) values (?, ?)";
 
         try {
             PreparedStatement statement = connection.prepareStatement(query);
@@ -41,10 +41,10 @@ public class TeamDao {
 
             while (rs.next()) {
                 Team team = new Team(
-                        rs.getInt("id"),
+                        rs.getInt("team_id"),
                         rs.getInt("stadium_id"),
-                        rs.getString("name"),
-                        rs.getTimestamp("created_at")
+                        rs.getString("team_name"),
+                        rs.getTimestamp("team_created_at")
                 );
                 teamList.add(team);
             }

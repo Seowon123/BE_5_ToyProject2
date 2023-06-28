@@ -7,15 +7,22 @@ import java.sql.Timestamp;
 
 @Getter
 public class Stadium {
-    private int id;
-    private String name;
-    private Timestamp createdAt;
+    private int stadiumId;
+    private String stadiumName;
+    private Timestamp stadiumCreatedAt;
 
-    @Builder
-    public Stadium(int id, String name, Timestamp createdAt) {
-        this.id = id;
-        this.name = name;
-        this.createdAt = createdAt;
+    public Stadium(int stadiumId, String stadiumName, Timestamp stadiumCreatedAt) {
+        this.stadiumId = stadiumId;
+        this.stadiumName = stadiumName;
+        this.stadiumCreatedAt = stadiumCreatedAt;
     }
 
+    @Override
+    public String toString() {
+        return "Stadium{" +
+                "stadiumId=" + stadiumId +
+                ", stadiumName='" + stadiumName + '\'' +
+                ", stadiumCreatedAt=" + stadiumCreatedAt +
+                '}';
+    }
 }

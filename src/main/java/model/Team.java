@@ -7,16 +7,25 @@ import java.sql.Timestamp;
 
 @Getter
 public class Team {
-    private int id;         //pk
-    private int stadiumId; //fk
-    private String name;
-    private Timestamp createdAt;
+    private int teamId;
+    private int stadiumId;
+    private String teamName;
+    private Timestamp teamCreatedAt;
 
-    @Builder
-    public Team(int id, int stadiumId, String name, Timestamp createdAt) {
-        this.id = id;
+    public Team(int teamId, int stadiumId, String teamName, Timestamp teamCreatedAt) {
+        this.teamId = teamId;
         this.stadiumId = stadiumId;
-        this.name = name;
-        this.createdAt = createdAt;
+        this.teamName = teamName;
+        this.teamCreatedAt = teamCreatedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Team{" +
+                "teamId=" + teamId +
+                ", stadiumId=" + stadiumId +
+                ", teamName='" + teamName + '\'' +
+                ", teamCreatedAt=" + teamCreatedAt +
+                '}';
     }
 }

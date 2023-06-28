@@ -17,11 +17,10 @@ public class StadiumDao {
     // 야구장 등록
     public void registerStadium(String name) {
 
-        String query = "insert into stadium_tb (stadium_id, name, created_at) values (?,?,now())";
+        String query = "insert into stadium (stadium_name) values (?)";
 
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setNull(1, Types.INTEGER);
-            statement.setString(2, name);
+            statement.setString(1, name);
 
             int result = statement.executeUpdate();
             System.out.println("registerStadium res : " + result);
@@ -40,15 +39,16 @@ public class StadiumDao {
         String query = "select * from stadium_tb";
 
         try {
+
             PreparedStatement statement = connection.prepareStatement(query);
 
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
                 Stadium stadium = new Stadium(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getTimestamp("created_at")
+                        rs.getInt("stadium_id"),
+                        rs.getString("stadium_name"),
+                        rs.getTimestamp("stadium_created_at")
                 );
                 stadiumList.add(stadium);
             }

@@ -7,16 +7,25 @@ import java.sql.Timestamp;
 
 @Getter
 public class OutPlayer {
-    private int id;
+    private int outPlayerId;
     private int playerId;
-    private String reason;
-    private Timestamp createdAt;
+    private String outPlayerReason;
+    private Timestamp outPlayerCreatedAt;
 
-    @Builder
-    public OutPlayer(int id, int playerId, String reason, Timestamp createdAt) {
-        this.id = id;
+    public OutPlayer(int outPlayerId, int playerId, String outPlayerReason, Timestamp outPlayerCreatedAt) {
+        this.outPlayerId = outPlayerId;
         this.playerId = playerId;
-        this.reason = reason;
-        this.createdAt = createdAt;
+        this.outPlayerReason = outPlayerReason;
+        this.outPlayerCreatedAt = outPlayerCreatedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "OutPlayer{" +
+                "outPlayerId=" + outPlayerId +
+                ", playerId=" + playerId +
+                ", outPlayerReason='" + outPlayerReason + '\'' +
+                ", outPlayerCreatedAt=" + outPlayerCreatedAt +
+                '}';
     }
 }
