@@ -15,7 +15,7 @@ public class TeamDao {
         this.connection = connection;
     }
     public void registerTeam(String name) {
-        String query = "insert into team_tb (stadium_id, name) values (?, ?)";
+        String query = "insert into team_tb (stadium_id, name, created_at) values (?, ?,now())";
 
         try {
             PreparedStatement statement = connection.prepareStatement(query);
