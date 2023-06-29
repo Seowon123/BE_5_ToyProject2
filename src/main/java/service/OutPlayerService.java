@@ -4,56 +4,68 @@ import Dao.OutPlayerDao;
 import Dao.PlayerDao;
 import db.DBConnection;
 import model.OutPlayer;
+import model.Player;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 public class OutPlayerService {
-    private final OutPlayerDao outPlayerDao;
-    private final PlayerDao playerDao;
-
-    public OutPlayerService() {
-        Connection connection = DBConnection.getInstance();
+    private Connection connection;
+    private PlayerDao playerDao;
+    private OutPlayerDao outPlayerDao;
+    public OutPlayerService(Connection connection) {
+        this.connection = connection;
         this.outPlayerDao = new OutPlayerDao(connection);
         this.playerDao = new PlayerDao(connection);
     }
 
     public void registerOutPlayer(int playerId, String reason) {
-        Connection connection = null;
+        // 플레이어 조회
+        Player player = playerDao.getPlayerById(playerId);
+
+        if (player == null) {
+            System.out.println("해당 선수를 찾을 수 없습니다.");
+            return;
+        }
+
+        // OutPlayer 생성
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        OutPlayer outPlayer = new OutPlayer(0, playerId, reason, timestamp);
+
         try {
-            connection = DBConnection.getInstance();
-            connection.setAutoCommit(false); // 트랜잭션 시작
+            // 트랜잭션 시작
+            playerDao.getConnection().setAutoCommit(false);
 
-            // 퇴출 선수 등록
-            OutPlayer outPlayer = new OutPlayer(playerId, reason);
-            outPlayerDao.registerOutPlayer(outPlayer);
+            // out_player 테이블에 퇴출 선수 등록
+            outPlayerDao.registerOutPlayer(
+                    outPlayer.getPlayerId(),
+                    outPlayer.getOutPlayerReason()
+            );
 
-            // 선수의 team_id를 null로 변경
+            // player 테이블에서 해당 선수의 team_id를 null로 업데이트
             playerDao.updateTeamIdToNull(playerId);
 
-            connection.commit(); // 트랜잭션 커밋
-            System.out.println("퇴출 선수 등록 및 팀 ID 업데이트가 성공적으로 수행되었습니다.");
+            // 트랜잭션 커밋
+            playerDao.getConnection().commit();
         } catch (SQLException e) {
-            if (connection != null) {
-                try {
-                    connection.rollback(); // 트랜잭션 롤백
-                } catch (SQLException rollbackEx) {
-                    System.err.println("트랜잭션 롤백 중 오류가 발생했습니다.");
-                    rollbackEx.printStackTrace();
-                }
-            }
-            System.err.println("퇴출 선수 등록 또는 팀 ID 업데이트 중 오류가 발생했습니다.");
             e.printStackTrace();
+
+            // 트랜잭션 롤백
+            try {
+                playerDao.getConnection().rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         } finally {
-            if (connection != null) {
-                try {
-                    connection.setAutoCommit(true);
-                    connection.close();
-                } catch (SQLException closeEx) {
-                    System.err.println("데이터베이스 연결을 닫는 중 오류가 발생했습니다.");
-                    closeEx.printStackTrace();
-                }
+            // 트랜잭션 종료
+            try {
+                playerDao.getConnection().setAutoCommit(true);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
             }
         }
+
+        System.out.println("퇴출 선수 등록이 완료되었습니다.");
     }
 }

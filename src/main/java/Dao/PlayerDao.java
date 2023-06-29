@@ -14,10 +14,39 @@ public class PlayerDao {
         this.connection = connection;
     }
 
+    public Connection getConnection() {
+        return connection;
+    }
+
+    //선수 조회
+    public Player getPlayerById(int playerId) {
+        String query = "SELECT * FROM player WHERE player_id = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, playerId);
+            ResultSet rs = statement.executeQuery();
+
+            if (rs.next()) {
+                Player player = new Player(
+                        rs.getInt("player_id"),
+                        rs.getInt("team_id"),
+                        rs.getString("player_name"),
+                        rs.getString("player_position"),
+                        rs.getTimestamp("player_created_at")
+                );
+                return player;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     //선수 등록
 
     public int registerPlayer(int teamId, String name, Position position) {
-        String query = "insert into player(team_id, player_name, player_position) values (?, ?, ?)";
+        String query = "INSERT INTO player (team_id, player_name, player_position, player_created_at) VALUES (?, ?, ?, NOW())";
 
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             statement.setInt(1, teamId);

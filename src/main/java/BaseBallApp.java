@@ -2,10 +2,11 @@ import db.DBConnection;
 import model.Player;
 import constant.Position;
 import service.PlayerService;
+import service.OutPlayerService;
 import Dao.PlayerDao;
 
 import java.sql.Connection;
-import java.util.List;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class BaseBallApp {
@@ -52,8 +53,40 @@ public class BaseBallApp {
             } else {
                 System.out.println("선수 등록에 실패하였습니다.");
             }
+        } else if (userInput.startsWith("퇴출등록")) {
+            String[] params = userInput.split("\\?")[1].split("&");
+            int playerId = 0;
+            String reason = "";
+
+            for (String param : params) {
+                String[] keyValue = param.split("=");
+                String key = keyValue[0];
+                String value = keyValue[1];
+
+                switch (key) {
+                    case "playerId":
+                        playerId = Integer.parseInt(value);
+                        break;
+                    case "reason":
+                        reason = value;
+                        break;
+                    default:
+                        System.out.println("잘못된 입력입니다.");
+                        return;
+                }
+            }
+
+            OutPlayerService outPlayerService = new OutPlayerService(connection);
+            outPlayerService.registerOutPlayer(playerId, reason);
+            System.out.println("퇴출 등록이 성공적으로 완료되었습니다.");
         } else {
             System.out.println("잘못된 입력입니다.");
+        }
+
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -16,11 +16,12 @@ public class OutPlayerDao {
 
     //선수 퇴출 등록
 
-    public int registerOutPlayer(int playerId, String outPlayerReason) {
-        String query = "insert into player(player_id, player_name) values (?, ?)";
+    public int registerOutPlayer(int PlayerId, String outPlayerReason) {
+        String query = "INSERT INTO out_player (player_id, out_player_reason, out_player_created_at) VALUES (?, ?, NOW())";
+
 
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setInt(1, playerId);
+            statement.setInt(1, PlayerId);
             statement.setString(2, outPlayerReason);
 
             int rowCount = statement.executeUpdate();
